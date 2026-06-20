@@ -5,6 +5,8 @@ import com.redis.Caching.model.Product;
 import com.redis.Caching.repository.ProductRepo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -51,6 +53,7 @@ public class ProductService {
         return productRepo.save(product);
     }
 
+    @CachePut(value = "products",key="#id")
     public Product updateProduct(Long id, ProductDto productDto) {
         log.info("---- Updating product {} in DB",id);
         Product existing=getProductById(id);
@@ -61,7 +64,7 @@ public class ProductService {
         existing.setStock(productDto.getStock());
         return productRepo.save(existing);
     }
-
+    @CacheEvict(value = "products",key="#id")
     public void deleteProductById(Long id) {
         log.info("---- DELETING product {} in DB",id);
         productRepo.deleteById(id);
