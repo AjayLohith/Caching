@@ -5,6 +5,7 @@ import com.redis.Caching.model.Product;
 import com.redis.Caching.repository.ProductRepo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,6 +31,7 @@ public class ProductService {
         return productRepo.findAll();
     }
 
+    @Cacheable(value = "products",key = "#id")
     public Product getProductById(Long id) {
         log.info("---- FETCHING PRODUCT:{} from DB",id);
         simulateSlowDbCall();
